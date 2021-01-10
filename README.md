@@ -1,8 +1,8 @@
 # A* Algorithm in Python
 
 This project is a simple A* algorithm visualizer, built with python and the pygame
-library. It finds the shortest path between to points, initially inputed by the user, 
-together with obstacles between the points defined. 
+library. It finds the shortest path between two points initially inputed by the user, 
+together with obstacles between the points defined.
 
 ## Test Program
 
