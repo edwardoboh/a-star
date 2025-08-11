@@ -1,11 +1,24 @@
-name: Deploy Microservice
+name: Deploy with Inputs
 
 on:
   push:
     branches: [ master ]
-  pull_request:
-    branches: [ master ]
   workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+          - development
+      port_context:
+        description: 'Port context information'
+        required: false
+        type: string
+        default: ''
 
 jobs:
   deploy:
@@ -15,59 +28,30 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
       
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
-        
-    - name: Install dependencies
+    - name: Display inputs
       run: |
-        echo "📦 Installing dependencies..."
-        sleep 2
-        echo "✅ Dependencies installed successfully"
+        echo "🎯 Environment: ${{ inputs.environment }}"
+        echo "🔌 Port Context: ${{ inputs.port_context }}"
         
-    - name: Run tests
+    - name: Deploy to environment
       run: |
-        echo "🧪 Running unit tests..."
-        sleep 3
-        echo "✅ All tests passed (15/15)"
+        echo "🚀 Deploying to ${{ inputs.environment }}..."
         
-    - name: Build application
-      run: |
-        echo "🔨 Building application..."
-        sleep 4
-        echo "✅ Build completed successfully"
+        if [ "${{ inputs.environment }}" = "production" ]; then
+          echo "⚠️  Production deployment - extra safety checks"
+          sleep 2
+        fi
         
-    - name: Build Docker image
-      run: |
-        echo "🐳 Building Docker image..."
-        echo "docker build -t a-star-microservice:${{ github.sha }} ."
-        sleep 3
-        echo "✅ Docker image built: a-star-microservice:${{ github.sha }}"
+        echo "✅ Deployment to ${{ inputs.environment }} completed"
         
-    - name: Push to registry
+    - name: Use port context
+      if: inputs.port_context != ''
       run: |
-        echo "📤 Pushing image to registry..."
-        echo "docker push registry.example.com/a-star-microservice:${{ github.sha }}"
-        sleep 2
-        echo "✅ Image pushed successfully"
+        echo "📋 Processing Port context..."
+        echo "Context data: ${{ inputs.port_context }}"
         
-    - name: Deploy to staging
+    - name: Notify completion
       run: |
-        echo "🚀 Deploying to staging environment..."
-        echo "kubectl set image deployment/a-star-microservice a-star-microservice=registry.example.com/a-star-microservice:${{ github.sha }}"
-        sleep 3
-        echo "✅ Deployed to staging: https://staging.example.com"
-        
-    - name: Health check
-      run: |
-        echo "🔍 Running health checks..."
-        sleep 2
-        echo "✅ Health check passed - service is responding"
-        
-    - name: Notify team
-      run: |
-        echo "📢 Notifying team of successful deployment..."
-        echo "Deployment completed! 🎉"
-        echo "Version: ${{ github.sha }}"
-        echo "Environment: production"
+        echo "🎉 Workflow completed successfully!"
+        echo "Environment: ${{ inputs.environment }}"
+        echo "Port Context: ${{ inputs.port_context || 'Not provided' }}"
