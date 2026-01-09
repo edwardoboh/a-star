@@ -11,6 +11,8 @@ n_of_rows = 40
 window = pygame.display.set_mode((width, height))
 pygame.display.set_caption("A* Algorithm")
 
+# Define constants here
+
 red = (255, 0, 0)
 green = (0, 255, 0)
 blue = (0, 0, 255)
@@ -240,5 +242,6 @@ def main(window, grid_width):
                             grid[spot.row][spot.col].update_neighbors(grid)
                 algorithm(lambda: draw_grid_and_lines(window, grid, n_of_rows, width), grid, start, end)
                     
+
 
 main(window, width)
