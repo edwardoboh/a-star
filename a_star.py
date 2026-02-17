@@ -241,4 +241,7 @@ def main(window, grid_width):
                 algorithm(lambda: draw_grid_and_lines(window, grid, n_of_rows, width), grid, start, end)
                     
 
+
+# Run Program
+
 main(window, width)
